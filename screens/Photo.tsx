@@ -1,5 +1,6 @@
 // Modules
-import React from 'react'
+import React, { useEffect } from 'react'
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ActivityIndicator, Image, TouchableOpacity, View } from 'react-native';
 
 // Icons
@@ -8,7 +9,6 @@ import { FontAwesome } from '@expo/vector-icons';
 
 // Colors
 import { darkGray, normalRed } from '../utils/colors';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 // Stack
 import { StackParams } from '../router/StackNavigator';
@@ -21,7 +21,19 @@ export interface Props extends NativeStackScreenProps<StackParams, 'photo'> { }
 export default function Photo({ navigation, route }: Props) {
 
   const { base64, uri } = route.params;
-  const { isLoading, isFetching, refetch } = useSendImage(base64);
+  const { 
+    isLoading, 
+    isFetching, 
+    refetch, 
+    isSuccess,
+    remove,
+    data
+  } = useSendImage(base64);
+
+  useEffect(() => {
+    if (isSuccess) navigation.navigate('results', { image:uri, isDog:data.data.isDog })
+    return () => remove();
+  }, [isSuccess])
 
   return (
     <View style={{ flex: 1, padding: 20 }}>
@@ -31,7 +43,7 @@ export default function Photo({ navigation, route }: Props) {
       />
       <TouchableOpacity
         style={{ marginVertical: 20, padding: 15, alignItems: 'center', backgroundColor: darkGray, borderRadius: 5 }}
-        onPress={() => refetch}
+        onPress={() => refetch()}
         disabled={isLoading || isFetching}
       >
         {(isLoading || isFetching) ? <ActivityIndicator color='white' style={{ paddingVertical: 3 }} /> : <FontAwesome name="send" size={24} color="white" />}
@@ -45,3 +57,4 @@ export default function Photo({ navigation, route }: Props) {
     </View>
   )
 }
+

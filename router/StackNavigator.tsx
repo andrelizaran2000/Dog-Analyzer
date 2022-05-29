@@ -14,7 +14,8 @@ export type StackParams = {
   };
   home: undefined;
   results: {
-    id: string;
+    isDog:boolean,
+    image:string
   }
 };
 

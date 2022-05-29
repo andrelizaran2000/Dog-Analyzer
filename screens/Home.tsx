@@ -58,7 +58,7 @@ export default function Home({ navigation }: Props) {
   async function takePhoto() {
     setTakingPhoto(true);
     if (cameraRef.current !== null && cameraRef.current !== undefined) {
-      let photo = await cameraRef.current.takePictureAsync({ base64: true });
+      let photo = await cameraRef.current.takePictureAsync({ base64: true, quality:0.1, skipProcessing:true });
       if (photo.base64) navigation.navigate('photo', { uri: photo.uri, base64: photo.base64 });
       setCurrentWindow('camera-off');
       setTakingPhoto(false);
@@ -141,7 +141,7 @@ type CameraWindowProps = {
   cameraRef: MutableRefObject<Camera | null | undefined>;
 }
 
-function CameraWindow({ cameraType, cameraRef }: CameraWindowProps) {
+function CameraWindow ({ cameraType, cameraRef }: CameraWindowProps) {
   return (
     <Camera
       style={{ width: '100%', height: 300 }}
@@ -154,7 +154,7 @@ function CameraWindow({ cameraType, cameraRef }: CameraWindowProps) {
   )
 }
 
-function NoPermissionsWindow() {
+function NoPermissionsWindow () {
   return (
     <View
       style={{
@@ -180,7 +180,7 @@ function NoPermissionsWindow() {
   )
 }
 
-function CameraOffWindow() {
+function CameraOffWindow () {
   return (
     <View
       style={{
